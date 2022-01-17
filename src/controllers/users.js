@@ -9,7 +9,7 @@ const create = async (req, res, next) => {
 
     return res.status(created).json(newUser);
   } catch (error) {
-    console.log(`Create User -> ${error}`);
+    console.log(`Create User -> ${error.message}`);
     next(error);
   }
 };

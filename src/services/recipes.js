@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const recipesModel = require('../models/recipes');
-const { badRequest } = require('../utils/dictionary');
+const { badRequest, notFound } = require('../utils/dictionary');
 const errorConstructor = require('../utils/errorConstructor');
 
 const recipeSchema = Joi.object({
@@ -34,7 +34,18 @@ const getAll = async () => {
   return recipes;
 };
 
+const findById = async (id) => {
+  if (id.length < 24) throw errorConstructor(notFound, 'recipe not found');
+  
+  const recipe = await recipesModel.findById(id);
+
+  if (!recipe) throw errorConstructor(notFound, 'recipe not found');
+
+  return recipe;
+};
+
 module.exports = {
   create,
   getAll,
+  findById,
 };

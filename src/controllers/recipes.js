@@ -1,5 +1,5 @@
 const recipeService = require('../services/recipes');
-const { created, success } = require('../utils/dictionary');
+const { created, success, noContent } = require('../utils/dictionary');
 
 const create = async (req, res, next) => {
   try {
@@ -52,9 +52,23 @@ const update = async (req, res, next) => {
   }
 };
 
+const deleteById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    await recipeService.deleteById(req.user, id);
+
+    return res.status(noContent).json();
+  } catch (error) {
+    console.log(`Update Recipe -> ${error.message}`);
+    next(error);
+  }
+};
+
 module.exports = {
   create,
   getAll,
   findById,
   update,
+  deleteById,
 };

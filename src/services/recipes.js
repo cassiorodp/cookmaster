@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const recipesModel = require('../models/recipes');
-const { badRequest, notFound } = require('../utils/dictionary');
+const { badRequest, notFound, unauthorized } = require('../utils/dictionary');
 const errorConstructor = require('../utils/errorConstructor');
 
 const recipeSchema = Joi.object({
@@ -12,7 +12,7 @@ const recipeSchema = Joi.object({
 
 const create = async (userId, name, ingredients, preparation) => {
   const { error } = recipeSchema.validate({ userId, name, ingredients, preparation });
-  
+
   if (error) throw errorConstructor(badRequest, 'Invalid entries. Try again.');
 
   const id = await recipesModel.create(userId, name, ingredients, preparation);
@@ -60,9 +60,24 @@ const update = async (id, updatedInfo) => {
   };
 };
 
+const deleteById = async (user, id) => {
+  const { _id: userId, role } = user;
+
+  const recipe = await recipesModel.findById(id);
+
+  if (recipe.userId.equals(userId) || role === 'admin') {
+    await recipesModel.deleteById(id);
+
+    return true;
+  }
+
+  throw errorConstructor(unauthorized, 'user not authorized');
+};
+
 module.exports = {
   create,
   getAll,
   findById,
   update,
+  deleteById,
 };

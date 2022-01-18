@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const usersModel = require('../models/users');
+const { unauthorized } = require('../utils/dictionary');
 
 const secret = 'mySecretToken';
 
@@ -7,7 +8,7 @@ module.exports = async (req, res, next) => {
   const token = req.headers.authorization;
 
   if (!token) {
-    return res.status(401).json({ message: 'Token not found' });
+    return res.status(unauthorized).json({ message: 'missing auth token' });
   }
 
   try {
@@ -17,7 +18,7 @@ module.exports = async (req, res, next) => {
 
     if (!user) {
       return res
-        .status(401)
+        .status(unauthorized)
         .json({ message: 'User not found.' });
     }
 
@@ -25,6 +26,6 @@ module.exports = async (req, res, next) => {
 
     next();
   } catch (error) {
-    return res.status(401).json({ message: error.message });
+    return res.status(unauthorized).json({ message: error.message });
   }
 };

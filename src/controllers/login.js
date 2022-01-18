@@ -15,7 +15,9 @@ const login = async (req, res, next) => {
       algorithm: 'HS256',
     };
 
-    const token = jwt.sign({ data: user }, secret, jwtConfig);
+    const { password: _password, ...userWithoutPassword } = user;
+
+    const token = jwt.sign({ data: userWithoutPassword }, secret, jwtConfig);
 
     return res.status(success).json({ token });
   } catch (error) {

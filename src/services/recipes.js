@@ -36,7 +36,7 @@ const getAll = async () => {
 
 const findById = async (id) => {
   if (id.length < 24) throw errorConstructor(notFound, 'recipe not found');
-  
+
   const recipe = await recipesModel.findById(id);
 
   if (!recipe) throw errorConstructor(notFound, 'recipe not found');
@@ -44,8 +44,25 @@ const findById = async (id) => {
   return recipe;
 };
 
+const update = async (id, updatedInfo) => {
+  const { name, ingredients, preparation } = updatedInfo;
+
+  const recipe = await recipesModel.findById(id);
+
+  await recipesModel.update(id, name, ingredients, preparation);
+
+  return {
+    _id: id,
+    name,
+    ingredients,
+    preparation,
+    userId: recipe.userId,
+  };
+};
+
 module.exports = {
   create,
   getAll,
   findById,
+  update,
 };

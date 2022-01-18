@@ -22,13 +22,24 @@ const findById = async (id) => {
   const conn = await connect();
   
   const recipe = await conn.collection('recipes').findOne({ _id: ObjectId(id) });
-  console.log(recipe);
 
   return recipe;
+};
+
+const update = async (id, name, ingredients, preparation) => {
+  const conn = await connect();
+  
+  await conn.collection('recipes').updateOne(
+    { _id: ObjectId(id) },
+    { $set: { name, ingredients, preparation } },
+  );
+
+  return true;
 };
 
 module.exports = {
   create,
   getAll,
   findById,
+  update,
 };

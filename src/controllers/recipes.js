@@ -71,7 +71,8 @@ const uploadImage = async (req, res, next) => {
 
     const updatedRecipe = await recipeService.uploadImage(req.user, id);
 
-    return res.status(success).json(updatedRecipe);
+    res.status(success).json(updatedRecipe);
+    next();
   } catch (error) {
     console.log(`Update Image -> ${error.message}`);
     next(error);

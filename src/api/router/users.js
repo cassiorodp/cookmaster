@@ -1,8 +1,10 @@
 const express = require('express');
-const { create } = require('../../controllers/users');
+const validateJWT = require('../../auth/validateJWT');
+const { createUser, createAdmin } = require('../../controllers/users');
 
 const usersRouter = express.Router();
 
-usersRouter.post('/', create);
+usersRouter.post('/', createUser);
+usersRouter.post('/admin', validateJWT, createAdmin);
 
 module.exports = usersRouter;

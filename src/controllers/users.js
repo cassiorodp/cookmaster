@@ -1,7 +1,7 @@
 const usersService = require('../services/users');
 const { created } = require('../utils/dictionary');
 
-const create = async (req, res, next) => {
+const createUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
@@ -14,6 +14,21 @@ const create = async (req, res, next) => {
   }
 };
 
+const createAdmin = async (req, res, next) => {
+  try {
+    const { name, email, password } = req.body;
+    const { role } = req.user;
+
+    const newUser = await usersService.createAdmin(name, email, password, role);
+
+    return res.status(created).json(newUser);
+  } catch (error) {
+    console.log(`Create Admin -> ${error.message}`);
+    next(error);
+  }
+};
+
 module.exports = {
-  create,
+  createUser,
+  createAdmin,
 };

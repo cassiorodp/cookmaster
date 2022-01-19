@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const usersModel = require('../models/users');
-const { badRequest, conflict } = require('../utils/dictionary');
+const { badRequest, conflict, forbidden } = require('../utils/dictionary');
 const errorConstructor = require('../utils/errorConstructor');
 
 const usersSchema = Joi.object({
@@ -30,6 +30,26 @@ const create = async (name, email, password, role = 'user') => {
   return { user };
 };
 
+const createAdmin = async (name, email, password, role) => {
+  if (role !== 'admin') throw errorConstructor(forbidden, 'Only admins can register new admins');
+
+  const foundUser = await usersModel.findByEmail(email);
+
+  if (foundUser) throw errorConstructor(conflict, 'Email already registered');
+
+  const id = await usersModel.create(name, email, password, role);
+
+  const user = {
+    _id: id,
+    name,
+    email,
+    role,
+  };
+
+  return { user };
+};
+
 module.exports = {
   create,
+  createAdmin,
 };

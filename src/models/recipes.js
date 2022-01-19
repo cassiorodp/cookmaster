@@ -45,10 +45,23 @@ const deleteById = async (id) => {
   return true;
 };
 
+const insertImagePath = async (id) => {
+  const imagePath = `localhost:3000/src/uploads/${id}.jpeg`;
+  const conn = await connect();
+
+  await conn.collection('recipes').updateOne(
+    { _id: ObjectId(id) },
+    { $set: { image: imagePath } },
+  );
+
+  return true;
+};
+
 module.exports = {
   create,
   getAll,
   findById,
   update,
   deleteById,
+  insertImagePath,
 };

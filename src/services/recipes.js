@@ -74,10 +74,27 @@ const deleteById = async (user, id) => {
   throw errorConstructor(unauthorized, 'user not authorized');
 };
 
+const uploadImage = async (user, id) => {
+  const { _id: userId, role } = user;
+
+  const recipe = await recipesModel.findById(id);
+
+  if (recipe.userId.equals(userId) || role === 'admin') {
+    await recipesModel.insertImagePath(id);
+
+    const updatedRecipe = await recipesModel.findById(id);
+
+    return updatedRecipe;
+  }
+
+  throw errorConstructor(unauthorized, 'user not authorized');
+};
+
 module.exports = {
   create,
   getAll,
   findById,
   update,
   deleteById,
+  uploadImage,
 };

@@ -65,10 +65,24 @@ const deleteById = async (req, res, next) => {
   }
 };
 
+const uploadImage = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const updatedRecipe = await recipeService.uploadImage(req.user, id);
+
+    return res.status(success).json(updatedRecipe);
+  } catch (error) {
+    console.log(`Update Image -> ${error.message}`);
+    next(error);
+  }
+};
+
 module.exports = {
   create,
   getAll,
   findById,
   update,
   deleteById,
+  uploadImage,
 };
